@@ -1,31 +1,24 @@
-import { Peer } from 'peerjs'
+import { ApplicationState } from './ApplicationState'
+import { createBlockState } from './Block'
 import './style.css'
 
-function main() {
-    const peer = new Peer()
-
-    peer.on('open', () => {
-        console.log('Peer opened', peer.id)
-        console.log('Room URL:', `${window.location.origin}/?peerId=${peer.id}`)
-
-        const params = new URLSearchParams(document.location.search)
-        const otherPeerId = params.get('peerId')
-
-        if (otherPeerId != null) {
-            console.log('Connecting to peer', otherPeerId)
-            const conn = peer.connect(otherPeerId)
-
-            conn.on('open', () => {
-                conn.send('hi!')
-            })
-        }
+function setup() {
+    const block = createBlockState({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        label: 'hello()'
     })
 
-    peer.on('connection', (conn) => {
-        conn.on('data', (data) => {
-            console.log(data)
-        })
-    })
+    ApplicationState.blocks.push(block)
 }
 
-main()
+function loop() {
+    requestAnimationFrame(loop)
+}
+
+
+setup()
+loop()
+
+
+
